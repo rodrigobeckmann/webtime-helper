@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.outletContainer {
+    position: fixed;
+    display: flex;
+    left: 50%;
+    top: 50%;
+}

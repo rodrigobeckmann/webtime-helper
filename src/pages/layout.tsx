@@ -1,18 +1,17 @@
 import { Outlet } from 'react-router-dom';
+import { LayoutContainer, OutletContainer } from '../styles';
 
 import AsideNavBar from '../components/asidenavbar';
-import Header from '../components/header';
 
-import styles from './layout.module.css';
+
 
 export default function Layout() {
   return (
-    <div className={styles.container}>
-      <Header />
+    <LayoutContainer>
       <AsideNavBar />
-      <div className={styles.outletContainer}>
+      <OutletContainer>
         <Outlet />
-      </div>
-    </div>
+      </OutletContainer>
+    </LayoutContainer>
   );
 }

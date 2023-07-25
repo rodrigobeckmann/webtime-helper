@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ContainerColumn, ContainerRow, ClockContainer, ProgressBar, FillerBar, Input } from '../styles';
+import { ContainerColumn, ContainerRow, ClockContainer, ProgressBar, FillerBar, Input, InputLabel, InputsContainer } from '../styles';
 
 let timerInterval: any = null;
 let timerTimeout: any = null;
@@ -14,10 +14,12 @@ export default function Timer() {
 
   const [fixedData, setFixedData] = useState(Date.now());
   const [futureData, setFutureData] = useState(Date.now());
+
   const [stopWatchTime, setStopWatchTime] = useState(INITAL_TIME);
   const [totalInMilliseconds, setTotalInMilliseconds] = useState(0);
   const [isTimerRuning, setIsTimerRuning] = useState(false);
   const [isTimerSet, setIsTimerSet] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [progressBar, setProgressBar] = useState(0);
 
   const { hours, minutes, seconds } = stopWatchTime;
@@ -27,6 +29,7 @@ export default function Timer() {
     setFutureData(Date.now() + totalInMilliseconds);
     setStopWatchTime(INITAL_TIME);
     setIsTimerSet(true);
+    setIsModalOpen(false);
   }
 
   const handleStart = () => {
@@ -45,6 +48,10 @@ export default function Timer() {
     setIsTimerRuning(false);
     setFutureData(fixedData);
     setIsTimerSet(false);
+  }
+
+  const openModal = () => {
+    setIsModalOpen(true);
   }
 
   const timerEnded = () => {
@@ -122,8 +129,8 @@ export default function Timer() {
 
       <ContainerColumn>
 
-        {!isTimerSet && <ContainerRow>
-          <label htmlFor="hours">
+        {isModalOpen && <InputsContainer>
+          <InputLabel htmlFor="hours">
             Horas:
             <Input
               type="number"
@@ -132,9 +139,9 @@ export default function Timer() {
               onChange={({ target }) => handleTimeChange(target)}
               min={0}
             />
-          </label>
+          </InputLabel>
 
-          <label htmlFor="minutes">
+          <InputLabel htmlFor="minutes">
             Minutos:
             <Input
               type="number"
@@ -142,9 +149,9 @@ export default function Timer() {
               value={minutes}
               onChange={({ target }) => handleTimeChange(target)}
             />
-          </label>
+          </InputLabel>
 
-          <label htmlFor="seconds">
+          <InputLabel htmlFor="seconds">
             Segundos:
             <Input
               type="number"
@@ -154,12 +161,15 @@ export default function Timer() {
               max={60}
               min={0}
             />
-          </label>
-        </ContainerRow>}
+          </InputLabel>
+
+          <button onClick={() => handleSetTime()}>set time</button>
+
+        </InputsContainer>}
 
         <ContainerRow>
 
-          {!isTimerSet && <button onClick={() => handleSetTime()}>set time</button>}
+          {!isTimerSet && <button onClick={() => openModal()}>set time</button>}
 
           {!isTimerRuning && isTimerSet && <button onClick={() => handleStart()}>start</button>}
 

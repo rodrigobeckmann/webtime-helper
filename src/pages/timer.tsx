@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { ContainerColumn, ContainerRow, ClockContainer, ProgressBar, FillerBar, Input } from '../styles';
 
 let timerInterval: any = null;
+let timerTimeout: any = null;
 
 const INITAL_TIME = {
   hours: 0,
@@ -35,11 +36,12 @@ export default function Timer() {
     timerInterval = setInterval(() => {
       setFixedData(Date.now());
     }, 100)
-    setTimeout(() => timerEnded(), totalInMilliseconds)
+    timerTimeout = setTimeout(() => timerEnded(), totalInMilliseconds)
   }
 
   const handleStop = () => {
     clearInterval(timerInterval);
+    clearTimeout(timerTimeout);
     setIsTimerRuning(false);
     setFutureData(fixedData);
     setIsTimerSet(false);

@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import { ContainerColumn, ContainerRow, ClockContainer, ProgressBar, FillerBar, Input, InputLabel, InputsContainer } from '../styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../app/store';
+import { modalStateChange, timerRuningStateChange, timerSetStateChange, incrementFutureDate, updateFixedDate, stopTimer } from '../app/slicers/timerSlice';
 
 let timerInterval: any = null;
 let timerTimeout: any = null;
@@ -12,32 +15,31 @@ const INITAL_TIME = {
 
 export default function Timer() {
 
-  const [fixedData, setFixedData] = useState(Date.now());
-  const [futureData, setFutureData] = useState(Date.now());
+  const dispatch = useDispatch();
+
+  const { isModalOpen, isTimerRunning, isTimerSet, futureDate, fixedDate } = useSelector((state: RootState) => state.timer);
+
+
 
   const [stopWatchTime, setStopWatchTime] = useState(INITAL_TIME);
   const [totalInMilliseconds, setTotalInMilliseconds] = useState(0);
-  const [isTimerRuning, setIsTimerRuning] = useState(false);
-  const [isTimerSet, setIsTimerSet] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [progressBar, setProgressBar] = useState(0);
-
   const { hours, minutes, seconds } = stopWatchTime;
 
   const handleSetTime = () => {
-    setFixedData(Date.now());
-    setFutureData(Date.now() + totalInMilliseconds);
+    dispatch(updateFixedDate());
+    dispatch(incrementFutureDate(totalInMilliseconds));
     setStopWatchTime(INITAL_TIME);
-    setIsTimerSet(true);
-    setIsModalOpen(false);
+    dispatch(timerSetStateChange());
+    dispatch(modalStateChange());
   }
 
   const handleStart = () => {
-    setFixedData(Date.now());
-    setFutureData(Date.now() + totalInMilliseconds);
-    setIsTimerRuning(true);
+    dispatch(updateFixedDate());
+    dispatch(incrementFutureDate(totalInMilliseconds));
+    dispatch(timerRuningStateChange());
     timerInterval = setInterval(() => {
-      setFixedData(Date.now());
+      dispatch(updateFixedDate());
     }, 100)
     timerTimeout = setTimeout(() => timerEnded(), totalInMilliseconds)
   }
@@ -45,19 +47,19 @@ export default function Timer() {
   const handleStop = () => {
     clearInterval(timerInterval);
     clearTimeout(timerTimeout);
-    setIsTimerRuning(false);
-    setFutureData(fixedData);
-    setIsTimerSet(false);
+    dispatch(timerRuningStateChange());
+    dispatch(stopTimer());
+    dispatch(timerSetStateChange());
   }
 
   const openModal = () => {
-    setIsModalOpen(true);
+    dispatch(modalStateChange());
   }
 
   const timerEnded = () => {
     clearInterval(timerInterval);
-    setIsTimerSet(false);
-    setIsTimerRuning(false);
+    dispatch(timerSetStateChange());
+    dispatch(timerRuningStateChange());
     console.log('end')
   }
 
@@ -81,15 +83,13 @@ export default function Timer() {
   useEffect(() => {
 
     const progressBarFiller = () => {
-      const timeProgress = ((fixedData - futureData) / totalInMilliseconds * 100) + 100;
+      const timeProgress = ((fixedDate - futureDate) / totalInMilliseconds * 100) + 100;
       setProgressBar(timeProgress > 100 ? 100 : timeProgress);
     }
 
     progressBarFiller();
 
-  }, [fixedData])
-
-
+  }, [fixedDate])
 
   useEffect(() => {
     if (!isTimerSet) {
@@ -121,13 +121,14 @@ export default function Timer() {
 
   return (
     <ContainerColumn>
-      <ClockContainer>{renderTime(futureData, fixedData)}</ClockContainer>
+      <ClockContainer>{renderTime(futureDate, fixedDate)}</ClockContainer>
 
       {isTimerSet && <ProgressBar id='progressBar'>
         <FillerBar id='filler' style={{ width: `${progressBar}%`, transition: `width 100ms linear` }}></FillerBar>
       </ProgressBar>}
 
       <ContainerColumn>
+
 
         {isModalOpen && <InputsContainer>
           <InputLabel htmlFor="hours">
@@ -167,13 +168,14 @@ export default function Timer() {
 
         </InputsContainer>}
 
+
         <ContainerRow>
 
           {!isTimerSet && <button onClick={() => openModal()}>set time</button>}
 
-          {!isTimerRuning && isTimerSet && <button onClick={() => handleStart()}>start</button>}
+          {!isTimerRunning && isTimerSet && <button onClick={() => handleStart()}>start</button>}
 
-          {isTimerRuning && <button onClick={() => handleStop()}>stop</button>}
+          {isTimerRunning && <button onClick={() => handleStop()}>stop</button>}
         </ContainerRow>
 
       </ContainerColumn>

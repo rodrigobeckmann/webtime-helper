@@ -7,7 +7,8 @@ export const DarkTheme = {
     clockColor: '#f1f1f1',
     progressBarBG: 'white',
     fillerBarBG: 'aqua',
-    modalBackGround: 'white',
+    modalBackGround: '#ffffffF2',
+    modalFontColor: 'black',
 }
 
 export const LightTheme = {
@@ -18,6 +19,7 @@ export const LightTheme = {
     progressBarBG: 'white',
     fillerBarBG: 'aqua',
     modalBackGround: 'white',
+    modalFontColor: 'black',
 }
 
 export const Aside = styled.aside`
@@ -96,11 +98,15 @@ background-color: ${(props) => props.theme.fillerBarBG};
 `;
 
 export const Input = styled.input`
-width: 30px;
-height: 20px;
+display: flex;
+flex-direction: column;
+width: 80%;
+height: 100%;
 font-size: 20px;
 text-align: center;
 justify-content: center;
+margin: 10px;
+font-size: 50px;
 &::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
@@ -108,7 +114,10 @@ justify-content: center;
 `
 
 export const InputLabel = styled.label`
-color: ${(props) => props.theme.clockColor};
+color: ${(props) => props.theme.modalFontColor};
+display: flex;
+flex-direction: column;
+align-items: center;
 `;
 
 export const TimezoneContainer = styled.div`
@@ -116,15 +125,65 @@ display: flex;
 flex-direction: column;
 `;
 
+export const InputContainerHeader = styled.div`
+position: fixed;
+top: 0;
+width: 100%;
+left: 0;
+border-radius: 10px 10px 0 0;
+height: 20px;
+background-color: aqua;
+`;
+
+export const ExitButton = styled.button`
+position: fixed;
+padding: 0;
+right: 5px;
+border: none;
+background-color: transparent;
+`;
+
+export const ModalConfirmButton = styled.button`
+position: fixed;
+right: 20px;
+bottom: 20px;
+background-color: green;
+`;
+
+export const ModalCancelButton = styled.button`
+position: fixed;
+right: 120px;
+bottom: 20px;
+background-color: red;
+`;
+
 export const InputsContainer = styled.div`
+display: flex;
+position: absolute;
+top: 20px;
+flex-direction: row;
+width: 100%;
+height: 70%;
+`;
+
+export const ModalContainer = styled.div`
 display: flex;
 position: fixed;
 background-color: ${(props) => props.theme.modalBackGround};
 border-radius: 10px;
 gap: 20px;
-padding: 150px;
 left: 50%;
 top: 50%;
 transform: translate(-50%, -50%);
 z-index: 10;
+width: 400px;
+height: 200px;
+`;
+
+export const AdSenseContainer = styled.div`
+position: absolute;
+display: flex;
+left: 90%;
+top: 50%;
+transform: translate(-90%, -50%);
 `;

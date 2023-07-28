@@ -7,6 +7,15 @@ export interface TimerState {
     isTimerSet: boolean,
     fixedDate: number,
     futureDate: number,
+    timerClock: {
+        hours: number,
+        minutes: number,
+        seconds: number,
+        milliseconds: number,
+    },
+    progressBar: {
+        filler: number,
+    }
 }
 
 export const initialState: TimerState = {
@@ -15,21 +24,55 @@ export const initialState: TimerState = {
     isTimerSet: false,
     fixedDate: Date.now(),
     futureDate: Date.now(),
+    timerClock: {
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        milliseconds: 0,
+    },
+    progressBar: {
+        filler: 0,
+    }
 }
+
 
 export const timerSlice = createSlice({
     name: 'timer',
     initialState,
     reducers: {
-        modalStateChange: (state) => { state.isModalOpen = !state.isModalOpen },
-        timerRuningStateChange: (state) => { state.isTimerRunning = !state.isTimerRunning },
-        timerSetStateChange: (state) => { state.isTimerSet = !state.isTimerSet },
-        incrementFutureDate: (state, action: PayloadAction<number>) => { state.futureDate = Date.now() + action.payload },
         updateFixedDate: (state) => { state.fixedDate = Date.now() },
-        stopTimer: (state) => { state.futureDate = state.fixedDate },
-    }
+        updateTimerHours: (state, action: PayloadAction<number>) => ({
+            ...state,
+            timerClock: {
+                ...state.timerClock,
+                hours: !action.payload ? 0 : action.payload >= 0 ? action.payload : 0,
+            }
+        }),
+        updateTimerMinutes: (state, action: PayloadAction<number>) => ({
+            ...state,
+            timerClock: {
+                ...state.timerClock,
+                minutes: !action.payload ? 0 : action.payload <= 59 && action.payload >= 0 ? action.payload : action.payload < 0 ? 0 : 59,
+            }
+        }),
+        updateTimerSeconds: (state, action: PayloadAction<number>) => ({
+            ...state,
+            timerClock: {
+                ...state.timerClock,
+                seconds: !action.payload ? 0 : action.payload <= 59 && action.payload >= 0 ? action.payload : action.payload < 0 ? 0 : 59,
+            }
+        }),
+        handleSetTime: (state) => ({ ...state, fixedDate: Date.now(), futureDate: Date.now() + state.timerClock.milliseconds, isTimerSet: true, isModalOpen: false }),
+        handleStartTime: (state) => ({ ...state, fixedDate: Date.now(), futureDate: Date.now() + state.timerClock.milliseconds, isTimerRunning: true }),
+        handleStopTimer: (state) => ({ ...state, isTimerRunning: false, futureDate: state.fixedDate, isTimerSet: false }),
+        openModal: (state) => ({ ...state, isModalOpen: true, timerClock: initialState.timerClock }),
+        handleTimerEnded: (state) => ({ ...state, isTimerSet: false, isTimerRunning: false }),
+        closeModal: (state) => { state.isModalOpen = false },
+        updateMilliseconds: (state) => { state.timerClock.milliseconds = (state.timerClock.hours * 3600000) + (state.timerClock.minutes * 60000) + (state.timerClock.seconds * 1000) },
+    },
 })
 
-export const { modalStateChange, timerRuningStateChange, timerSetStateChange, incrementFutureDate, updateFixedDate, stopTimer } = timerSlice.actions;
+
+export const { updateFixedDate, updateTimerHours, updateTimerMinutes, updateTimerSeconds, handleSetTime, handleStartTime, handleStopTimer, openModal, handleTimerEnded, closeModal, updateMilliseconds } = timerSlice.actions;
 
 export default timerSlice.reducer;

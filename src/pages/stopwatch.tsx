@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { ContainerColumn, ContainerRow, ClockContainer } from '../styles';
+import { ContainerRow, ClockContainer, Button, ComponentContainer } from '../styles';
 import { handleStartStopWatch, updateFutureDate, handlePause, handleStopStopWatch, updateElapsedTime } from '../app/slicers/stopWatchSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import renderStopWatchTime from '../utils/renderStopWatchTime';
@@ -35,19 +35,20 @@ export default function StopWatch() {
     }
 
     return (
-        <ContainerColumn>
+        <ComponentContainer>
             <ClockContainer>{renderStopWatchTime(futureDate, fixedDate)}</ClockContainer>
+
 
             <ContainerRow>
 
-                {!isTimerRunning && <button onClick={() => handleStart()}>start</button>}
+                {!isTimerRunning && <Button onClick={() => handleStart()}>start</Button>}
 
-                {isTimerRunning && <button onClick={() => handleReset()}>pause</button>}
+                {isTimerRunning && <Button onClick={() => handleReset()}>pause</Button>}
 
-                <button onClick={() => handleStop()}>stop</button>
+                <Button onClick={() => handleStop()}>stop</Button>
 
             </ContainerRow>
 
-        </ContainerColumn>
+        </ComponentContainer>
     );
 }

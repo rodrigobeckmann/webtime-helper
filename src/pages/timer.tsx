@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
-import { ContainerColumn, ContainerRow, ClockContainer, ProgressBar, FillerBar } from '../styles';
+import { useEffect } from 'react'
+import { ContainerRow, ClockContainer, ProgressBar, FillerBar, Button, ComponentContainer } from '../styles';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { updateFixedDate, handleStartTime, handleStopTimer, openModal, handleTimerEnded } from '../app/slicers/timerSlice';
+import { updateFixedDate, handleStartTime, handleStopTimer, openModal, handleTimerEnded, updateProgressBar } from '../app/slicers/timerSlice';
 import renderTime from '../utils/renderTime';
 import TimerModal from '../components/timerModal';
+import alarmsound from '../assets/alarmsound.mp3';
 
 let timerInterval: any = null;
 let timerTimeout: any = null;
@@ -12,11 +13,10 @@ export default function Timer() {
 
   const dispatch = useAppDispatch();
 
-  const { isModalOpen, isTimerRunning, isTimerSet, futureDate, fixedDate, timerClock } = useAppSelector((state) => state.timer);
+  const { isModalOpen, isTimerRunning, isTimerSet, futureDate, fixedDate, timerClock, progressBar } = useAppSelector((state) => state.timer);
 
   const { milliseconds } = timerClock;
 
-  const [progressBar, setProgressBar] = useState(0);
 
   const handleStart = () => {
     dispatch(handleStartTime())
@@ -35,42 +35,37 @@ export default function Timer() {
 
   const timerEnded = () => {
     clearInterval(timerInterval);
+    const alarm = new Audio(alarmsound);
+    alarm.play();
     dispatch(handleTimerEnded());
   }
 
   useEffect(() => {
 
-    const progressBarFiller = () => {
-      const timeProgress = ((fixedDate - futureDate) / milliseconds * 100) + 100;
-      setProgressBar(timeProgress > 100 ? 100 : timeProgress);
-    }
-
-    progressBarFiller();
+    dispatch(updateProgressBar());
 
   }, [fixedDate])
 
   return (
-    <ContainerColumn>
+    <ComponentContainer>
       <ClockContainer>{renderTime(futureDate, fixedDate)}</ClockContainer>
 
       {isTimerSet && <ProgressBar id='progressBar'>
-        <FillerBar id='filler' style={{ width: `${progressBar}%`, transition: `width 100ms linear` }}></FillerBar>
+        <FillerBar id='filler' style={{ width: `${progressBar.filler}%`, transition: `width 100ms linear` }}></FillerBar>
       </ProgressBar>}
 
-      <ContainerColumn>
 
-        {isModalOpen && <TimerModal />}
+      {isModalOpen && <TimerModal />}
 
-        <ContainerRow>
+      <ContainerRow>
 
-          {!isTimerSet && <button onClick={() => dispatch(openModal())}>set time</button>}
+        {!isTimerSet && <Button onClick={() => dispatch(openModal())}>Editar Tempo</Button>}
 
-          {!isTimerRunning && isTimerSet && <button onClick={() => handleStart()}>start</button>}
+        {!isTimerRunning && isTimerSet && <Button onClick={() => handleStart()}>start</Button>}
 
-          {isTimerRunning && <button onClick={() => handleStop()}>stop</button>}
-        </ContainerRow>
+        {isTimerRunning && <Button onClick={() => handleStop()}>stop</Button>}
+      </ContainerRow>
 
-      </ContainerColumn>
-    </ContainerColumn>
+    </ComponentContainer>
   );
 }

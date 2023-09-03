@@ -30,7 +30,12 @@ article, aside, canvas, details, embed,
 figure, figcaption, footer, header, hgroup, 
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {${resetCss}}
-@font-face {${digitalClockFont}}
+@font-face {${digitalClockFont}},
+html,
+body,
+#root {
+  height: 100%;
+}
 `;
 
 export default GlobalStyle;

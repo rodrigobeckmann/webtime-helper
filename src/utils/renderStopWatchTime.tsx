@@ -1,3 +1,5 @@
+import { MillisecondsContainer } from "../styles";
+
 const renderStopWatchTime = (targetTime: number, startTime: number) => {
 
     const padZero = (num: number, pad: number) => {
@@ -18,7 +20,7 @@ const renderStopWatchTime = (targetTime: number, startTime: number) => {
 
 
     return (
-        <span>{padZero(minutes, 2)}:{padZero(seconds, 2)}<span style={{ fontSize: '50px', letterSpacing: '-10px' }}>.{padZero(milliseconds, 3)}</span></span>
+        <span>{padZero(minutes, 2)}:{padZero(seconds, 2)}<MillisecondsContainer>.{padZero(milliseconds, 3)}</MillisecondsContainer></span>
     )
 
 }

@@ -5,12 +5,11 @@ const renderTime = (targetTime: number, startTime: number) => {
     }
 
     const time = targetTime - startTime <= 0 ? 0 : targetTime - startTime;
-    const hours = Math.floor(time / 3600000);
-    const minutes = Math.floor((time - hours * 3600000) / 60000);
-    const seconds = Math.floor((time - hours * 3600000 - minutes * 60000) / 1000);
+    const minutes = Math.floor(time / 60000);
+    const seconds = Math.floor((time - minutes * 60000) / 1000);
 
     return (
-        <span>{padZero(hours)}:{padZero(minutes)}:{padZero(seconds)}</span>
+        <span>{padZero(minutes)}:{padZero(seconds)}</span>
     )
 
 }

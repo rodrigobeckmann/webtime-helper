@@ -69,10 +69,11 @@ export const timerSlice = createSlice({
         handleTimerEnded: (state) => ({ ...state, isTimerSet: false, isTimerRunning: false }),
         closeModal: (state) => { state.isModalOpen = false },
         updateMilliseconds: (state) => { state.timerClock.milliseconds = (state.timerClock.hours * 3600000) + (state.timerClock.minutes * 60000) + (state.timerClock.seconds * 1000) },
+        updateProgressBar: (state) => { state.progressBar.filler = ((state.fixedDate - state.futureDate) / state.timerClock.milliseconds * 100) + 100 },
     },
 })
 
 
-export const { updateFixedDate, updateTimerHours, updateTimerMinutes, updateTimerSeconds, handleSetTime, handleStartTime, handleStopTimer, openModal, handleTimerEnded, closeModal, updateMilliseconds } = timerSlice.actions;
+export const { updateFixedDate, updateTimerHours, updateTimerMinutes, updateTimerSeconds, handleSetTime, handleStartTime, handleStopTimer, openModal, handleTimerEnded, closeModal, updateMilliseconds, updateProgressBar } = timerSlice.actions;
 
 export default timerSlice.reducer;

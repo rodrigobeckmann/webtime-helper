@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import Layout from './pages/layout';
 import Timer from './pages/timer';
 import StopWatch from './pages/stopwatch';
+import Pomodoro from './pages/pomodoro';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/" Component={Layout}>
           <Route index Component={Timer} />
           <Route path="stopwatch" Component={StopWatch} />
+          <Route path='pomodoro' Component={Pomodoro} />
         </Route>
       </Routes>
     </ThemeProvider>
